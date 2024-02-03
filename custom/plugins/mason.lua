@@ -1,54 +1,57 @@
 return {
-  {
-    "williamboman/mason.nvim",
-    lazy = false,
-    config = function()
-      require("mason").setup()
-    end,
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    lazy = false,
-    opts = {
-      auto_install = true,
-    },
-  },
-  {
-    "neovim/nvim-lspconfig",
-    lazy = false,
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      { "antosha417/nvim-lsp-file-operations", config = true },
-    },
-    config = function()
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+	{
+		"williamboman/mason.nvim",
+		lazy = false,
+		config = function()
+			require("mason").setup()
+		end,
+	},
+	{
+		"williamboman/mason-lspconfig.nvim",
+		lazy = false,
+		opts = {
+			auto_install = true,
+		},
+	},
+	{
+		"neovim/nvim-lspconfig",
+		lazy = false,
+		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
+			{ "antosha417/nvim-lsp-file-operations", config = true },
+		},
+		config = function()
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      local lspconfig = require "lspconfig"
-      lspconfig.tsserver.setup {
-        capabilities = capabilities,
-      }
-      lspconfig.html.setup {
-        capabilities = capabilities,
-      }
-      lspconfig.lua_ls.setup {
-        capabilities = capabilities,
-      }
-      vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "diagnostic go to prev" })
-      vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "diagnostic go to next" })
+			local lspconfig = require("lspconfig")
+			-- lspconfig.tsserver.setup({
+			-- 	capabilities = capabilities,
+			-- })
+			lspconfig.html.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.lua_ls.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.cssls.setup({
+				capabilities = capabilities,
+			})
+			vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "diagnostic go to prev" })
+			vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "diagnostic go to next" })
 
-      vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-      vim.keymap.set("n", "gD", vim.lsp.buf.declaration, {})
-      vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
-      -- vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
-      vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", {}) -- show definition, references
+			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
+			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, {})
+			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
+			-- vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
+			vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", {}) -- show definition, references
 
-      vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", {})
+			vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", {})
 
-      vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
-      vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", {})
-      vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
-    end,
-  },
+			vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
+			vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", {})
+			vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
+		end,
+	},
 }
 
 -- return {

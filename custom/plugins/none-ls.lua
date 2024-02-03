@@ -1,7 +1,7 @@
 return {
 	"nvimtools/none-ls.nvim",
-	lazy = true,
-	event = { "BufReadPre", "BufNewFile" },
+	lazy = false,
+	-- event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"jay-babu/mason-null-ls.nvim",
 	},
@@ -14,74 +14,49 @@ return {
 		local diagnostics = null_ls.builtins.diagnostics
 
 		null_ls.setup({
+			debug = true,
+
 			sources = {
+				diagnostics.eslint_d.with({
+					condition = function(utils)
+						return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
+					end,
+				}),
 				diagnostics.stylelint,
 				formatting.stylua,
-				diagnostics.prettierd,
-				-- null_ls.builtins.diagnostics.erb_lint,
 				formatting.stylelint,
-				-- diagnostics.eslint_d,
-				-- formatting.eslint_d,
-				-- diagnostics.rubocop,
-				-- formatting.rubocop,
-				-- diagnostics.prettierd.with({
-				-- 	condition = function(utils)
-				-- 		local eslintConfigFiles = {
-				-- 			".eslintrc.js",
-				-- 			".eslintrc.cjs",
-				-- 			".eslintrc.json",
-				-- 		}
-				--
-				-- 		for _, file in ipairs(eslintConfigFiles) do
-				-- 			if utils.root_has_file(file) then
-				-- 				return false
-				-- 			end
-				-- 		end
-				-- 		return true
-				-- 		-- return utils.with.root_has_file {
-				-- 		--   ".prettierrc",
-				-- 		--   ".prettierrc.json",
-				-- 		--   ".prettierrc.js",
-				-- 		--   "prettier.config.js",
-				-- 		-- }
-				-- 	end,
-				-- }),
-				formatting.prettierd.with({
-					extra_filetype = { "scss" },
+				formatting.rubocop,
+				formatting.eslint_d.with({
+					condition = function(utils)
+						return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
+					end,
+				}),
+				-- formatting.biome,
+
+				formatting.biome.with({
+					extra_filetypes = { "html", "scss", "css" },
 					condition = function(utils)
 						local eslintConfigFiles = {
 							".eslintrc.js",
 							".eslintrc.cjs",
 							".eslintrc.json",
 						}
-
 						for _, file in ipairs(eslintConfigFiles) do
 							if utils.root_has_file(file) then
 								return false
 							end
+							return true
 						end
-						return true
-						-- return utils.with.root_has_file {
-						--   ".prettierrc",
-						--   ".prettierrc.json",
-						--   ".prettierrc.js",
-						--   "prettier.config.js",
-						-- }
-					end,
-				}),
-
-				diagnostics.eslint_d.with({
-					condition = function(utils)
-						return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
-					end,
-				}),
-
-				formatting.eslint_d.with({
-					condition = function(utils)
-						return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
+						-- return utils.with.root_has_file({
+						-- 	".prettierrc",
+						-- 	".prettierrc.json",
+						-- 	".prettierrc.js",
+						-- 	"prettier.config.js",
+						-- })
 					end,
 				}),
 			},
+
 			on_attach = function(current_client, bufnr)
 				if current_client.supports_method("textDocument/formatting") then
 					vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
