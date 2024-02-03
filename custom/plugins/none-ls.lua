@@ -9,17 +9,77 @@ return {
 		local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 		local null_ls = require("null-ls")
+
+		local formatting = null_ls.builtins.formatting
+		local diagnostics = null_ls.builtins.diagnostics
+
 		null_ls.setup({
 			sources = {
-				null_ls.builtins.diagnostics.stylelint,
-				null_ls.builtins.formatting.stylua,
+				diagnostics.stylelint,
+				formatting.stylua,
 				-- null_ls.builtins.formatting.prettier,
 				-- null_ls.builtins.diagnostics.erb_lint,
-				null_ls.builtins.formatting.stylelint,
-				null_ls.builtins.diagnostics.eslint_d,
-				null_ls.builtins.formatting.eslint_d,
-				null_ls.builtins.diagnostics.rubocop,
-				null_ls.builtins.formatting.rubocop,
+				formatting.stylelint,
+				-- diagnostics.eslint_d,
+				-- formatting.eslint_d,
+				-- diagnostics.rubocop,
+				-- formatting.rubocop,
+				-- diagnostics.prettierd.with({
+				-- 	condition = function(utils)
+				-- 		local eslintConfigFiles = {
+				-- 			".eslintrc.js",
+				-- 			".eslintrc.cjs",
+				-- 			".eslintrc.json",
+				-- 		}
+				--
+				-- 		for _, file in ipairs(eslintConfigFiles) do
+				-- 			if utils.root_has_file(file) then
+				-- 				return false
+				-- 			end
+				-- 		end
+				-- 		return true
+				-- 		-- return utils.with.root_has_file {
+				-- 		--   ".prettierrc",
+				-- 		--   ".prettierrc.json",
+				-- 		--   ".prettierrc.js",
+				-- 		--   "prettier.config.js",
+				-- 		-- }
+				-- 	end,
+				-- }),
+				formatting.prettierd.with({
+					condition = function(utils)
+						local eslintConfigFiles = {
+							".eslintrc.js",
+							".eslintrc.cjs",
+							".eslintrc.json",
+						}
+
+						for _, file in ipairs(eslintConfigFiles) do
+							if utils.root_has_file(file) then
+								return false
+							end
+						end
+						return true
+						-- return utils.with.root_has_file {
+						--   ".prettierrc",
+						--   ".prettierrc.json",
+						--   ".prettierrc.js",
+						--   "prettier.config.js",
+						-- }
+					end,
+				}),
+
+				diagnostics.eslint_d.with({
+					condition = function(utils)
+						return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
+					end,
+				}),
+
+				formatting.eslint_d.with({
+					condition = function(utils)
+						return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
+					end,
+				}),
 			},
 			on_attach = function(current_client, bufnr)
 				if current_client.supports_method("textDocument/formatting") then
