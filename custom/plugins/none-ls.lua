@@ -17,7 +17,7 @@ return {
 			sources = {
 				diagnostics.stylelint,
 				formatting.stylua,
-				-- null_ls.builtins.formatting.prettier,
+				diagnostics.prettierd,
 				-- null_ls.builtins.diagnostics.erb_lint,
 				formatting.stylelint,
 				-- diagnostics.eslint_d,
@@ -47,6 +47,7 @@ return {
 				-- 	end,
 				-- }),
 				formatting.prettierd.with({
+					extra_filetype = { "scss" },
 					condition = function(utils)
 						local eslintConfigFiles = {
 							".eslintrc.js",
