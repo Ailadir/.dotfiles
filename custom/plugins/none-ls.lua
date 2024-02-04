@@ -33,7 +33,7 @@ return {
 				}),
 				-- formatting.biome,
 
-				formatting.biome.with({
+				formatting.prettierd.with({
 					extra_filetypes = { "html", "scss", "css" },
 					condition = function(utils)
 						local eslintConfigFiles = {
