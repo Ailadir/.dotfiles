@@ -21,6 +21,18 @@ return {
 			},
 		},
 	},
+	keys = {
+		vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" }),
+	},
 	-- Optional dependencies
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
+
+-- Failed to load `plugins.oil`
+--
+-- /Users/ailadir/.config/nvim/lua/plugins/oil.lua:25: attempt to call field 'est' (a nil value)
+--
+-- # stacktrace:
+--   - lua/plugins/oil.lua:25
+--   - lua/config/lazy.lua:9
+--   - init.lua:2

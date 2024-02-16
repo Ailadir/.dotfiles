@@ -17,11 +17,16 @@ return {
 			debug = true,
 
 			sources = {
-				diagnostics.eslint_d.with({
-					condition = function(utils)
-						return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
-					end,
-				}),
+				null_ls.builtins.diagnostics.eslint_d.with({}),
+
+				-- diagnostics.eslint_d.with({
+				-- 	-- filter = function(diagnostic)
+				-- 	-- 	return not string.find(diagnostic.code or "", "typescript-eslint", 1, true)
+				-- 	-- end,
+				-- 	condition = function(utils)
+				-- 		return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
+				-- 	end,
+				-- }),
 				diagnostics.stylelint,
 				formatting.stylua,
 				formatting.stylelint,

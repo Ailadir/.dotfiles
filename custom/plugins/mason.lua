@@ -2,22 +2,102 @@ return {
 	{
 		"williamboman/mason.nvim",
 		lazy = false,
+		dependencies = {
+			"williamboman/mason-lspconfig.nvim",
+			"WhoIsSethDaniel/mason-tool-installer.nvim",
+		},
 		config = function()
-			require("mason").setup()
+			local mason = require("mason")
+
+			mason.setup({
+				ui = {
+					icons = {
+						package_installed = "✓",
+						package_pending = "➜",
+						package_uninstalled = "✗",
+					},
+				},
+			})
+
+			local mason_tool_installer = require("mason-tool-installer")
+
+			local mason_lspconfig = require("mason-lspconfig")
+
+			mason_lspconfig.setup({
+				-- list of servers for mason to install
+				ensure_installed = {
+					"tsserver",
+					"html",
+					"cssls",
+					"tailwindcss",
+					"svelte",
+					"lua_ls",
+					"graphql",
+					"emmet_ls",
+					"prismals",
+					"pyright",
+				},
+				-- auto-install configured servers (with lspconfig)
+				automatic_installation = true, -- not the same as ensure_installed
+			})
+
+			mason_tool_installer.setup({
+				ensure_installed = {
+					"prettierd", -- prettier formatter
+					"stylua", -- lua formatter
+					"isort", -- python formatter
+					"black", -- python formatter
+					"pylint", -- python linter
+					"eslint_d", -- js linter
+					"stylelint",
+				},
+			})
 		end,
 	},
-	{
-		"williamboman/mason-lspconfig.nvim",
-		lazy = false,
-		opts = {
-			auto_install = true,
-		},
-	},
+	-- {
+	-- 	"williamboman/mason-lspconfig.nvim",
+	-- 	after = "mason.nvim",
+	-- 	lazy = false,
+	-- 	opts = {
+	-- 		auto_install = true,
+	-- 		ensure_installed = {
+	-- 			"tsserver",
+	-- 			"html",
+	-- 			"cssls",
+	-- 			"tailwindcss",
+	-- 			"svelte",
+	-- 			"lua_ls",
+	-- 			"graphql",
+	-- 			"emmet_ls",
+	-- 			"prismals",
+	-- 			"pyright",
+	-- 		},
+	-- 	},
+	-- },
 	{
 		"pmizio/typescript-tools.nvim",
 		event = { "BufReadPost", "BufNewFile" },
 		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-		opts = {},
+		config = function()
+			local api = require("typescript-tools.api")
+
+			require("typescript-tools").setup({
+				handlers = {
+					["textDocument/publishDiagnostics"] = api.filter_diagnostics(
+						-- Ignore 'This may be converted to an async function' diagnostics.
+						{ 80006, 6133 }
+					),
+				},
+				settings = {
+					tsserver_plugins = {
+						-- for TypeScript v4.9+
+						"@styled/typescript-styled-plugin",
+						-- or for older TypeScript versions
+						-- "typescript-styled-plugin",
+					},
+				},
+			})
+		end,
 	},
 	{
 		"neovim/nvim-lspconfig",
@@ -30,6 +110,7 @@ return {
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 			local lspconfig = require("lspconfig")
+
 			-- lspconfig.tsserver.setup({
 			-- 	capabilities = capabilities,
 			-- })
@@ -56,6 +137,12 @@ return {
 			vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
 			vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", {})
 			vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
+			vim.api.nvim_create_autocmd("LspAttach", {
+				callback = function(args)
+					local client = vim.lsp.get_client_by_id(args.data.client_id)
+					client.server_capabilities.semanticTokensProvider = nil
+				end,
+			})
 		end,
 	},
 }
@@ -71,7 +158,6 @@ return {
 --     local mason = require "mason"
 --
 --     -- import mason-lspconfig
---     local mason_lspconfig = require "mason-lspconfig"
 --
 --     local mason_tool_installer = require "mason-tool-installer"
 --
@@ -85,6 +171,7 @@ return {
 --         },
 --       },
 --     }
+--     local mason_lspconfig = require "mason-lspconfig"
 --
 --     mason_lspconfig.setup {
 --       -- list of servers for mason to install
