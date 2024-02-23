@@ -4,6 +4,7 @@ return {
 	-- event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"jay-babu/mason-null-ls.nvim",
+		"plenary.nvim",
 	},
 	config = function()
 		local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
@@ -12,13 +13,14 @@ return {
 
 		local formatting = null_ls.builtins.formatting
 		local diagnostics = null_ls.builtins.diagnostics
+		local completion = null_ls.builtins.completion.spell
+		local code_actions = null_ls.builtins.code_actions
 
 		null_ls.setup({
 			debug = true,
 
 			sources = {
 				null_ls.builtins.diagnostics.eslint_d.with({}),
-
 				-- diagnostics.eslint_d.with({
 				-- 	-- filter = function(diagnostic)
 				-- 	-- 	return not string.find(diagnostic.code or "", "typescript-eslint", 1, true)

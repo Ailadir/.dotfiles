@@ -82,19 +82,22 @@ return {
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" }, -- lsp
 					{ name = "buffer", max_item_count = 5 }, -- text within current buffer
-					{ name = "copilot" }, -- Copilot suggestions
+					-- { name = "copilot" }, -- Copilot suggestions
 					{ name = "path", max_item_count = 3 }, -- file system paths
 					{ name = "luasnip", max_item_count = 3 }, -- snippets
+					{ name = "codeium" },
 				}),
 				-- Enable pictogram icons for lsp/autocompletion
 				formatting = {
 					expandable_indicator = true,
 					format = lspkind.cmp_format({
-						mode = "symbol_text",
+						-- mode = "symbol_text",
+						mode = "symbol",
 						maxwidth = 50,
 						ellipsis_char = "...",
 						symbol_map = {
-							Copilot = "",
+							-- Copilot = "",
+							Codeium = "",
 						},
 					}),
 				},
@@ -102,6 +105,16 @@ return {
 					ghost_text = true,
 				},
 			})
+		end,
+	},
+	{
+		"Exafunction/codeium.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"hrsh7th/nvim-cmp",
+		},
+		config = function()
+			require("codeium").setup({})
 		end,
 	},
 }
