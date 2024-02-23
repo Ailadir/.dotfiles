@@ -61,7 +61,7 @@ return {
 
 			require("typescript-tools").setup({
 				handlers = {
-					["textDocument/publishDiagnostics"] = api.filter_diagnostics({ 1002, 80006, 6133 }),
+					["textDocument/publishDiagnostics"] = api.filter_diagnostics({ 1109, 1002, 80006, 6133 }),
 				},
 				settings = {
 					tsserver_plugins = {

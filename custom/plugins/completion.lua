@@ -1,9 +1,27 @@
 return {
 	{
+		"zbirenbaum/copilot.lua",
+		lazy = true,
+		cmd = "Copilot",
+		event = "InsertEnter",
+		build = ":Copilot auth",
+		opts = {
+			suggestion = { enabled = true, auto_trigger = true, debounce = 10, keymap = { accept = "\\" } },
+			panel = { enabled = false },
+			filetypes = {
+				markdown = true,
+				help = true,
+				typescriptreact = true,
+				typescript = true,
+				javascript = true,
+				lua = true,
+			},
+		},
+	},
+	{
 		"hrsh7th/nvim-cmp",
 		event = { "BufReadPost", "BufNewFile" },
 		dependencies = {
-			"hrsh7th/cmp-nvim-lsp",
 			"hrsh7th/cmp-buffer",
 			"hrsh7th/cmp-path",
 			"hrsh7th/cmp-cmdline",
@@ -16,7 +34,6 @@ return {
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local lspkind = require("lspkind")
-
 			-- Load snippets
 			require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -85,19 +102,19 @@ return {
 					-- { name = "copilot" }, -- Copilot suggestions
 					{ name = "path", max_item_count = 3 }, -- file system paths
 					{ name = "luasnip", max_item_count = 3 }, -- snippets
-					{ name = "codeium" },
+					-- { name = "codeium" },
 				}),
 				-- Enable pictogram icons for lsp/autocompletion
 				formatting = {
 					expandable_indicator = true,
 					format = lspkind.cmp_format({
-						-- mode = "symbol_text",
-						mode = "symbol",
+						mode = "symbol_text",
+						-- mode = "symbol",
 						maxwidth = 50,
 						ellipsis_char = "...",
 						symbol_map = {
-							-- Copilot = "",
-							Codeium = "",
+							Copilot = "",
+							-- Codeium = "",
 						},
 					}),
 				},
@@ -105,16 +122,6 @@ return {
 					ghost_text = true,
 				},
 			})
-		end,
-	},
-	{
-		"Exafunction/codeium.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"hrsh7th/nvim-cmp",
-		},
-		config = function()
-			require("codeium").setup({})
 		end,
 	},
 }
