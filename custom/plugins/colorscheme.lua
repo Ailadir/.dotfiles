@@ -32,9 +32,33 @@
 -- }
 --
 --
+-- return
+-- {
+-- 	"folke/tokyonight.nvim",
+-- 	lazy = false,
+-- 	priority = 1000,
+-- 	opts = { style = "moon" },
+-- }
+
 return {
-	"folke/tokyonight.nvim",
-	lazy = false,
-	priority = 1000,
-	opts = { style = "moon" },
+	{
+		"rebelot/kanagawa.nvim",
+		lazy = false,
+		priority = 1000,
+		opts = {
+			style = "dark",
+		},
+	},
+	-- {
+	-- 	"folke/tokyonight.nvim",
+	-- 	lazy = false,
+	-- 	priority = 1000,
+	-- 	opts = { style = "moon" },
+	-- },
+	{
+		"LazyVim/LazyVim",
+		opts = {
+			colorscheme = "kanagawa",
+		},
+	},
 }

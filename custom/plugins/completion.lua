@@ -3,10 +3,12 @@ return {
 		"zbirenbaum/copilot.lua",
 		lazy = true,
 		cmd = "Copilot",
-		event = "InsertEnter",
+		-- event = "InsertEnter",
+		event = { "BufReadPost", "BufNewFile" },
 		build = ":Copilot auth",
+
 		opts = {
-			suggestion = { enabled = true, auto_trigger = true, debounce = 10, keymap = { accept = "\\" } },
+			suggestion = { enabled = true, auto_trigger = true, debounce = 5, keymap = { accept = "\\" } },
 			panel = { enabled = false },
 			filetypes = {
 				markdown = true,

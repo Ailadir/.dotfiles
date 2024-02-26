@@ -3,7 +3,8 @@ return {
 	lazy = false,
 	opts = {
 		options = {
-			theme = "tokyonight",
+			theme = "kanagawa",
+			-- theme = "tokyonight",
 			-- theme = "dracula",
 			icons_enables = true,
 		},

@@ -1,6 +1,6 @@
 return {
 	"nvimtools/none-ls.nvim",
-	lazy = true,
+	lazy = false,
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"jay-babu/mason-null-ls.nvim",
@@ -13,22 +13,22 @@ return {
 
 		local formatting = null_ls.builtins.formatting
 		local diagnostics = null_ls.builtins.diagnostics
-
 		null_ls.setup({
-			debug = true,
+
+			debug = false,
 
 			sources = {
-				null_ls.builtins.diagnostics.eslint_d.with({}),
+				diagnostics.eslint_d,
 				diagnostics.stylelint,
 				formatting.stylua,
 				formatting.stylelint,
 				formatting.rubocop,
-				formatting.eslint_d.with({
-					condition = function(utils)
-						return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
-					end,
-				}),
-
+				-- formatting.eslint_d.with({
+				-- 	condition = function(utils)
+				-- 		return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
+				-- 	end,
+				-- }),
+				formatting.eslint_d,
 				formatting.prettierd.with({
 					extra_filetypes = { "html", "scss", "css" },
 					condition = function(utils)
