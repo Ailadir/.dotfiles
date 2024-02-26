@@ -48,6 +48,14 @@ return {
 					"pylint", -- python linter
 					"eslint_d", -- js linter
 					"stylelint",
+					"flake8",
+					"yamllint",
+					"jsonlint",
+					"markdownlint",
+					"vint",
+					"htmlhint",
+					"shellcheck",
+					"graphql",
 				},
 			})
 		end,
