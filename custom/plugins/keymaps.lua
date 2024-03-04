@@ -4,10 +4,12 @@
 --
 
 return { --Movement in insert mode
-	vim.keymap.set("i", "<C-h>", "<Left>", { desc = "Move left" }),
-	vim.keymap.set("i", "<C-l>", "<Right>", { desc = "Move right" }),
-	vim.keymap.set("i", "<C-j>", "<Down>", { desc = "Move down" }),
-	vim.keymap.set("i", "<C-k>", "<Up>", { desc = "Move up" }),
+	vim.keymap.set("n", "x", '"_x', { desc = "Delete without yanking" }),
+
+	vim.keymap.set("i", "<C-h>", "<Left>", { desc = "Move left", remap = true }),
+	vim.keymap.set("i", "<C-l>", "<Right>", { desc = "Move right", remap = true }),
+	vim.keymap.set("i", "<C-j>", "<Down>", { desc = "Move down", remap = true }),
+	vim.keymap.set("i", "<C-k>", "<Up>", { desc = "Move up", remap = true }),
 
 	--Go to diagnostic
 	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "diagnostic go to prev" }),
@@ -16,7 +18,11 @@ return { --Movement in insert mode
 	-- Buffers movement and closing
 	vim.keymap.set("n", "<S-TAB>", "<cmd>bprevious<cr>", { desc = "Prev buffer" }),
 	vim.keymap.set("n", "<TAB>", "<cmd>bnext<cr>", { desc = "Next buffer" }),
-	vim.keymap.set("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close bufer" }),
+	vim.keymap.set("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close buffer" }),
+
+	-- Split screen
+	vim.keymap.set("n", "ss", ":split<Return>", { desc = "Split screen" }),
+	vim.keymap.set("n", "sv", ":vsplit<Return>", { desc = "Vertical split" }),
 
 	--Telscope bindings(find)
 	vim.keymap.set("n", "<leader>fo", "<cmd> Telescope oldfiles <CR>", { desc = "Find oldfiles" }),
