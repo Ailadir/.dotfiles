@@ -4,7 +4,8 @@ return {
 		lazy = true,
 		cmd = "Copilot",
 		-- event = "InsertEnter",
-		event = { "BufReadPost", "BufNewFile" },
+		-- i want to add event when open a file(old and new)
+		event = { "BufReadPost", "BufNewFile", "InsertEnter" },
 		build = ":Copilot auth",
 
 		opts = {
@@ -17,6 +18,11 @@ return {
 				typescript = true,
 				javascript = true,
 				lua = true,
+				python = true,
+				json = true,
+				html = true,
+				css = true,
+				scss = true,
 			},
 		},
 	},
@@ -36,6 +42,7 @@ return {
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local lspkind = require("lspkind")
+
 			-- Load snippets
 			require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -103,7 +110,7 @@ return {
 					{ name = "buffer", max_item_count = 5 }, -- text within current buffer
 					-- { name = "copilot" }, -- Copilot suggestions
 					{ name = "path", max_item_count = 3 }, -- file system paths
-					{ name = "luasnip", max_item_count = 3 }, -- snippets
+					-- { name = "luasnip", max_item_count = 3 }, -- snippets
 					-- { name = "codeium" },
 				}),
 				-- Enable pictogram icons for lsp/autocompletion
