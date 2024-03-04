@@ -1,6 +1,5 @@
 return {
 	"olimorris/persisted.nvim",
-	config = true,
 	config = function()
 		require("persisted").setup({
 			use_git_branch = true,
