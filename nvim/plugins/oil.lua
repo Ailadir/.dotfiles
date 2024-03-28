@@ -1,5 +1,6 @@
 return {
 	"stevearc/oil.nvim",
+	dependencies = { "nvim-tree/nvim-web-devicons" },
 	lazy = false,
 	opts = {
 		view_options = {
@@ -25,7 +26,6 @@ return {
 		vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" }),
 	},
 	-- Optional dependencies
-	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 
 -- Failed to load `plugins.oil`

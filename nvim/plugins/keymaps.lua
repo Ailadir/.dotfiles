@@ -12,8 +12,8 @@ return { --Movement in insert mode
 	vim.keymap.set("i", "<C-k>", "<Up>", { desc = "Move up", remap = true }),
 
 	-- Buffers movement and closing
-	vim.keymap.set("n", "<S-TAB>", "<cmd>bprevious<cr>", { desc = "Prev buffer" }),
-	vim.keymap.set("n", "<TAB>", "<cmd>bnext<cr>", { desc = "Next buffer" }),
+	vim.keymap.set("n", "<S-TAB>", "<cmd>bp<cr>", { desc = "Prev buffer" }),
+	vim.keymap.set("n", "<TAB>", "<cmd>bn<cr>", { desc = "Next buffer" }),
 	vim.keymap.set("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close buffer" }),
 
 	-- Split screen

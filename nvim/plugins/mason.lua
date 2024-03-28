@@ -127,6 +127,7 @@ return {
 			--Lsp setup
 			local lspconfig = require("lspconfig")
 
+			-- LSP FOR FRONTEND
 			lspconfig.eslint.setup({
 				capabilities = capabilities,
 				on_attach = function(client, bufnr)
@@ -136,20 +137,14 @@ return {
 					})
 				end,
 			})
-
-			lspconfig.stylelint_lsp.setup({
-				-- capabilities = capabilities,
-				settings = {
-					stylelintplus = {
-						autoFixOnSave = true,
-						autoFixOnFormat = true,
-					},
-				},
-			})
-
 			lspconfig.html.setup({
 				capabilities = capabilities,
 			})
+			lspconfig.cssls.setup({
+				capabilities = capabilities,
+			})
+
+			-- LSP FOR LUA
 			lspconfig.lua_ls.setup({
 				-- enabled = false,
 				single_file_support = true,
@@ -214,9 +209,10 @@ return {
 					},
 				},
 			})
-			lspconfig.cssls.setup({
-				capabilities = capabilities,
-			})
+
+			local opts = { noremap = true, silent = false }
+
+			-- REGULAR KEYMAP
 			vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "diagnostic go to prev" })
 			vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "diagnostic go to next" })
 
@@ -240,3 +236,63 @@ return {
 		end,
 	},
 }
+
+-- return {
+
+-- 	{
+-- 		"williamboman/mason.nvim",
+-- 		lazy = false,
+-- 		config = function()
+-- 			require("mason").setup()
+-- 		end,
+-- 	},
+-- 	{
+-- 		"williamboman/mason-lspconfig.nvim",
+-- 		lazy = false,
+-- 		opts = {
+-- 			auto_install = true,
+-- 		},
+-- 	},
+-- 	{
+-- 		"pmizio/typescript-tools.nvim",
+-- 		event = { "BufReadPost", "BufNewFile" },
+-- 		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+-- 		opts = {},
+-- 	},
+-- 	{
+-- 		"neovim/nvim-lspconfig",
+-- 		lazy = false,
+-- 		dependencies = {
+-- 			"hrsh7th/cmp-nvim-lsp",
+-- 			{ "antosha417/nvim-lsp-file-operations", config = true },
+-- 		},
+-- 		config = function()
+-- 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+--
+-- 			local lspconfig = require("lspconfig")
+-- 			lspconfig.html.setup({
+-- 				capabilities = capabilities,
+-- 			})
+-- 			lspconfig.lua_ls.setup({
+-- 				capabilities = capabilities,
+-- 			})
+-- 			lspconfig.cssls.setup({
+-- 				capabilities = capabilities,
+-- 			})
+-- 			vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "diagnostic go to prev" })
+-- 			vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "diagnostic go to next" })
+--
+-- 			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
+-- 			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, {})
+-- 			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
+-- 			-- vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
+-- 			vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", {}) -- show definition, references
+--
+-- 			vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", {})
+--
+-- 			vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
+-- 			vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", {})
+-- 			vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
+-- 		end,
+-- 	},
+-- }
