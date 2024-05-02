@@ -1,6 +1,6 @@
 return {
 	"nvimtools/none-ls.nvim",
-	lazy = false,
+	-- lazy = false,
 	-- event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"jay-babu/mason-null-ls.nvim",
@@ -40,6 +40,7 @@ return {
 				-- 		end
 				-- 	end,
 				-- }),
+				--
 				diagnostics.stylelint,
 				formatting.stylua,
 				formatting.stylelint,
@@ -66,8 +67,11 @@ return {
 				-- 	end,
 				-- }),
 				-- formatting.biome,
+				formatting.prettierd.with({
+					filetypes = { "html", "json" },
+				}),
 				formatting.biome.with({
-					extra_filetypes = { "html", "scss", "css" },
+					extra_filetypes = { "html", "scss", "css", "json" },
 					condition = function(utils)
 						local eslintConfigFiles = {
 							".eslintrc.js",

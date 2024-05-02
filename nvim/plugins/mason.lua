@@ -144,6 +144,10 @@ return {
 				capabilities = capabilities,
 			})
 
+			lspconfig.jsonls.setup({
+				capabilities = capabilities,
+			})
+
 			-- LSP FOR LUA
 			lspconfig.lua_ls.setup({
 				-- enabled = false,
@@ -211,6 +215,7 @@ return {
 			})
 
 			local opts = { noremap = true, silent = false }
+			vim.cmd("highlight FloatBorder guibg=NONE")
 
 			-- REGULAR KEYMAP
 			vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "diagnostic go to prev" })

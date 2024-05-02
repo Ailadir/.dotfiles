@@ -4,9 +4,10 @@ return {
 	opts = {
 		options = {
 			-- theme = "solarized-osaka",
-			theme = "kanagawa",
+			-- theme = "kanagawa",
 			-- theme = "tokyonight",
 			-- theme = "dracula",
+			theme = "gruvbox",
 			icons_enables = true,
 		},
 		sections = {
