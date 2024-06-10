@@ -69,7 +69,7 @@ return {
 		"neovim/nvim-lspconfig",
 		dependencies = {
 			{ "folke/neoconf.nvim", cmd = "Neoconf", config = false, dependencies = { "nvim-lspconfig" } },
-			{ "folke/neodev.nvim", opts = {} },
+			{ "folke/lazydev.nvim", opts = {} },
 			"mason.nvim",
 			"williamboman/mason-lspconfig.nvim",
 			"hrsh7th/cmp-nvim-lsp",
@@ -81,6 +81,16 @@ return {
 				eslint = {
 					settings = {
 						workingDirectories = { mode = "auto" },
+					},
+				},
+				jsonls = {
+					settings = {
+						json = {
+							fomat = {
+								enable = true,
+							},
+						},
+						validate = { enable = true },
 					},
 				},
 			},
@@ -144,9 +154,9 @@ return {
 				capabilities = capabilities,
 			})
 
-			lspconfig.jsonls.setup({
-				capabilities = capabilities,
-			})
+			-- lspconfig.jsonls.setup({
+			-- 	capabilities = capabilities,
+			-- })
 
 			-- LSP FOR LUA
 			lspconfig.lua_ls.setup({

@@ -3,11 +3,12 @@ return {
 	lazy = false,
 	opts = {
 		options = {
+			-- theme = "monokai-pro",
 			-- theme = "solarized-osaka",
 			-- theme = "kanagawa",
 			-- theme = "tokyonight",
 			-- theme = "dracula",
-			theme = "gruvbox",
+			-- theme = "gruvbox",
 			icons_enables = true,
 		},
 		sections = {

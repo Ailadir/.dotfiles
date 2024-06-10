@@ -1,6 +1,7 @@
 return {
 	"akinsho/bufferline.nvim",
 	event = "VeryLazy",
+	dependencies = { "echasnovski/mini.bufremove" },
 	opts = {
 		options = {
       -- stylua: ignore
