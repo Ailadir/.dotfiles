@@ -1,8 +1,3 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
---
-
 return { --Movement in insert mode
 	-- vim.keymap.set("n", "x", '"_x', { desc = "Delete without yanking" }),
 
@@ -18,10 +13,9 @@ return { --Movement in insert mode
 
 	-- Split screen
 	-- vim.keymap.set("n", "ss", ":split<Return>", { desc = "Split screen" }),
-	-- vim.keymap.set("n", "sv", ":vsplit<Return>", { desc = "Vertical split" }),
+	vim.keymap.set("n", "sv", ":vsplit<Return>", { desc = "Vertical split" }),
 
 	--Telscope bindings(find)
-	vim.keymap.set("n", "<leader>fo", "<cmd> Telescope oldfiles <CR>", { desc = "Find oldfiles" }),
 	-- vim.keymap.set(
 	-- 	"n",
 	-- 	"<leader>fz",
@@ -46,7 +40,7 @@ return { --Movement in insert mode
 	-- vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { silent = true, desc = "LSP declaration" }),
 	-- vim.keymap.set("n", "gd", vim.lsp.buf.definition, { silent = true, desc = "LSP definition" }),
 	-- vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { silent = true, desc = "LSP implementation" }),
-	-- vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, { silent = true, desc = "LSP type definition" }),
+	-- vim.keymapjset("n", "<leader>D", vim.lsp.buf.type_definition, { silent = true, desc = "LSP type definition" }),
 
 	-- vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", { desc = "Lsp Restart" }),
 	-- vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Lsp Buffer Rename" }),

@@ -15,35 +15,11 @@ return {
 		local diagnostics = null_ls.builtins.diagnostics
 
 		null_ls.setup({
-			debug = true,
+			-- debug = true,
 
 			sources = {
-				-- require("none-ls.diagnostics.eslint"),
-				-- require("none-ls.diagnostics.eslint").with({
-				-- 	condition = function(utils)
-				-- 		return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
-				-- 	end,
-				-- }),
-				-- diagnostics.semgrep.with({
-				-- 	extra_filetypes = { "html", "scss", "css" },
-				-- 	condition = function(utils)
-				-- 		local eslintConfigFiles = {
-				-- 			".eslintrc.js",
-				-- 			".eslintrc.cjs",
-				-- 			".eslintrc.json",
-				-- 		}
-				-- 		for _, file in ipairs(eslintConfigFiles) do
-				-- 			if utils.root_has_file(file) then
-				-- 				return false
-				-- 			end
-				-- 			return true
-				-- 		end
-				-- 	end,
-				-- }),
-				--
 				diagnostics.stylelint,
 				formatting.stylua,
-				formatting.stylelint,
 				formatting.prettierd.with({
 					filetypes = { "md", "markdown" },
 					condition = function(utils)
@@ -60,12 +36,6 @@ return {
 						end
 					end,
 				}),
-				-- formatting.rubocop,
-				-- require("none-ls.formatting.eslint").with({
-				-- 	condition = function(utils)
-				-- 		return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
-				-- 	end,
-				-- }),
 				-- formatting.biome,
 				formatting.prettierd.with({
 					filetypes = { "html", "json" },

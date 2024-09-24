@@ -8,7 +8,7 @@ return {
 			-- theme = "kanagawa",
 			-- theme = "tokyonight",
 			-- theme = "dracula",
-			-- theme = "gruvbox",
+			theme = "gruvbox",
 			icons_enables = true,
 		},
 		sections = {

@@ -4,8 +4,9 @@ return {
 	dependencies = { "echasnovski/mini.bufremove" },
 	opts = {
 		options = {
-      -- stylua: ignore
-      close_command = function(n) require("mini.bufremove").delete(n, false) end,
+			close_command = function(n)
+				require("mini.bufremove").delete(n, false)
+			end,
 			diagnostics = "nvim_lsp",
 			always_show_bufferline = false,
 			diagnostics_indicator = function(_, _, diag)
@@ -16,15 +17,9 @@ return {
 			end,
 		},
 	},
-	config = function(_, opts)
-		require("bufferline").setup(opts)
-		-- Fix bufferline when restoring a session
-		vim.api.nvim_create_autocmd("BufAdd", {
-			callback = function()
-				vim.schedule(function()
-					pcall(nvim_bufferline)
-				end)
-			end,
+	config = function()
+		require("bufferline").setup({
+			highlights = require("catppuccin.groups.integrations.bufferline").get(),
 		})
 	end,
 }

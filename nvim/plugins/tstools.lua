@@ -9,7 +9,18 @@ return {
 			handlers = {
 				["textDocument/publishDiagnostics"] = api.filter_diagnostics({ 1109, 1002, 80006, 6133 }),
 			},
+			textDocument = {
+				foldingRange = {
+					dynamicRegistration = false,
+					lineFoldingOnly = true,
+				},
+			},
 			settings = {
+				experimental = {
+					completion = {
+						enableServerSideFuzzyMatch = true,
+					},
+				},
 				tsserver_plugins = {
 					"@styled/typescript-styled-plugin",
 					"typescript-styled-plugin",

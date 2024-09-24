@@ -90,6 +90,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
 		-- FZF keybindings
 		vim.keymap.set("n", "<leader>sz", "<CMD> :FzfLua<CR>", { desc = "[S]earch [Z]en" })
 
+		-- vim.keymap.set("n", "<leader>s", "[S]earch")
 		--
 		vim.keymap.set("n", "<leader>/", function()
 			builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
