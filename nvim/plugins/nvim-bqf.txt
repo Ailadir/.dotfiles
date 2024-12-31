@@ -1,3 +1,0 @@
-TODO:
-Need to add nvim-bqf and learn how to do it better next.
-it will provide some usage with quick fix.
