@@ -7,10 +7,10 @@ vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagn
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
 vim.api.nvim_set_keymap(
-  "n",
-  "<leader>rn",
-  "<cmd>lua vim.lsp.buf.rename()<CR>",
-  { noremap = true, silent = true, desc = "[R]ename variable" }
+	"n",
+	"<leader>rn",
+	"<cmd>lua vim.lsp.buf.rename()<CR>",
+	{ noremap = true, silent = true, desc = "[R]ename variable" }
 )
 
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
@@ -54,18 +54,18 @@ vim.keymap.set("n", "sv", ":vsplit<Return>", { desc = "Vertical split" })
 --fzf bindings
 --#region
 
-vim.keymap.set("n", "<leader>rs", "<cmd>FzfLua resume<cr>", { desc = "Resume" })
+-- vim.keymap.set("n", "<leader>rs", "<cmd>FzfLua resume<cr>", { desc = "Resume" })
 -- vim.keymap.set("n", "<leader>/", function()
 --   require("fzf-lua").blines()
 -- end, { desc = "[/] Fuzzily search lines in current buffer" })
 -- [[ Basic Autocommands ]]
-vim.api.nvim_create_autocmd("TextYankPost", {
-  desc = "Highlight when yanking (copying) text",
-  group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-})
+-- vim.api.nvim_create_autocmd("TextYankPost", {
+-- 	desc = "Highlight when yanking (copying) text",
+-- 	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
+-- 	callback = function()
+-- 		vim.highlight.on_yank()
+-- 	end,
+-- })
 
 -- Function for note-taking
 
@@ -117,38 +117,42 @@ vim.api.nvim_exec(spawn_note_window_vimscript, false)
 vim.keymap.set("n", "<leader>sq", ":call Spawn_note_window()<CR>", { noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader>se", function()
-  require("fzf-lua").files({
-    cwd = "~/Documents/notes/workNotes/",
-  })
-end, { noremap = true, silent = true })
+	require("snacks.picker").files({
+		cwd = vim.fn.expand("~/Documents/notes/workNotes/"), -- Specify the directory
+	})
+end, { noremap = true, silent = true, desc = "Search Work Notes" })
 
-vim.keymap.set(
-  "n",
-  "<leader><space>",
-  "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>",
-  { desc = "Search buffers" }
-)
+vim.keymap.set("n", "<leader><space>", function()
+	require("snacks.picker").buffers()
+	-- sort = function(buffers)
+	-- 	-- Sort by last used or most recently used
+	-- 	table.sort(buffers, function(a, b)
+	-- 		return a.lastused > b.lastused
+	-- 	end)
+	-- 	return buffers
+	-- end,
+end, { desc = "Search buffers" })
 
 -- Neogit and Diffview keymaps
 vim.api.nvim_set_keymap("n", "<leader>gn", "<CMD>Neogit<CR>", { desc = "Open neogit", noremap = true, silent = true })
 vim.keymap.set("n", "<leader>gd", function()
-  if next(require("diffview.lib").views) == nil then
-    vim.cmd("DiffviewFileHistory %")
-  else
-    vim.cmd("DiffviewClose")
-  end
+	if next(require("diffview.lib").views) == nil then
+		vim.cmd("DiffviewFileHistory %")
+	else
+		vim.cmd("DiffviewClose")
+	end
 end, { desc = "Toggle diffView filehistory", noremap = true, silent = true })
 
 -- Define the function in the global namespace
 _G.open_in_finder = function()
-  local file_path = vim.fn.expand("%:p:h") -- Get the directory of the current file
-  os.execute('open "' .. file_path .. '"')
+	local file_path = vim.fn.expand("%:p:h") -- Get the directory of the current file
+	os.execute('open "' .. file_path .. '"')
 end
 
 -- Map the function to a keybinding
 vim.api.nvim_set_keymap(
-  "n",
-  "<leader>of",
-  ":lua open_in_finder()<CR>",
-  { noremap = true, silent = true, desc = "Open [F]ile in Finder" }
+	"n",
+	"<leader>of",
+	":lua open_in_finder()<CR>",
+	{ noremap = true, silent = true, desc = "Open [F]ile in Finder" }
 )

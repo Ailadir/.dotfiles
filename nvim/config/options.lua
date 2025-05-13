@@ -75,3 +75,7 @@ vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
 
 vim.opt.foldmethod = "indent"
+-- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+-- vim.g.codeium_max_time = 100
+-- vim.g.codeium_max_completion = 3
+-- vim.g.codeium_autocomplete = true
