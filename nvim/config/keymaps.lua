@@ -156,3 +156,11 @@ vim.api.nvim_set_keymap(
 	":lua open_in_finder()<CR>",
 	{ noremap = true, silent = true, desc = "Open [F]ile in Finder" }
 )
+
+vim.keymap.set("n", "<leader>gf", function()
+	Snacks.lazygit.log_file()
+end, { desc = "Snacks git history" })
+
+vim.keymap.set({ "n", "t" }, "<leader>tt", function()
+	Snacks.terminal()
+end, { desc = "Toggle terminal" })
