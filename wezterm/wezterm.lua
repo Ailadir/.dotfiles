@@ -16,8 +16,8 @@ config.window_padding = {
 }
 
 config.color_scheme = "Gruvbox Dark (Gogh)"
-config.font_size = 16
-config.font = wezterm.font("JetBrains Mono Regular", { weight = "Medium", stretch = "Normal", style = "Normal" })
+config.font_size = 17.5
+-- config.font = wezterm.font("JetBrains Mono Regular", { weight = "Medium", stretch = "Normal", style = "Normal" })
 config.font_rules = {
 	{
 		italic = true,

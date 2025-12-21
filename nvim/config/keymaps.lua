@@ -35,41 +35,16 @@ vim.keymap.set("i", "<C-k>", "<Up>", { desc = "Move up", remap = true })
 -- Buffers movement and closing
 vim.keymap.set("n", "<S-TAB>", "<cmd>bp<cr>", { desc = "Prev buffer" })
 vim.keymap.set("n", "<TAB>", "<cmd>bn<cr>", { desc = "Next buffer" })
--- vim.keymap.set("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close buffer" })
 
 vim.keymap.set("n", "<leader>x", ":bp<bar>sp<bar>bn<bar>bd<CR>", { desc = "Close buffer" })
 
 -- Split screen
-vim.keymap.set("n", "ss", ":split<Return>", { desc = "Split screen" })
+vim.keymap.set("n", "sV", ":split<Return>", { desc = "Split screen" })
 vim.keymap.set("n", "sv", ":vsplit<Return>", { desc = "Vertical split" })
 
-----Telscope bindings(find)
---vim.keymap.set(
---  "n",
---  "<leader>fa",
---  "<cmd> Telescope find_files follow=true no_ignore=true hidden=true <CR>",
---  { desc = "Find all" }
---)
---
---fzf bindings
---#region
-
--- vim.keymap.set("n", "<leader>rs", "<cmd>FzfLua resume<cr>", { desc = "Resume" })
--- vim.keymap.set("n", "<leader>/", function()
---   require("fzf-lua").blines()
--- end, { desc = "[/] Fuzzily search lines in current buffer" })
--- [[ Basic Autocommands ]]
--- vim.api.nvim_create_autocmd("TextYankPost", {
--- 	desc = "Highlight when yanking (copying) text",
--- 	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
--- 	callback = function()
--- 		vim.highlight.on_yank()
--- 	end,
--- })
-
--- Function for note-taking
-
-local spawn_note_window_vimscript = [[function! Spawn_note_window() abort
+--Note taking functionality
+vim.api.nvim_exec([[
+function! Spawn_note_window() abort
   let path = "~/Documents/notes/workNotes/dailyNotes/"
   let file_name = path.strftime("note-%d-%m-%y.md")
   " Empty buffer
@@ -112,8 +87,8 @@ local spawn_note_window_vimscript = [[function! Spawn_note_window() abort
     execute "startinsert"
   endif
 endfunction
-]]
-vim.api.nvim_exec(spawn_note_window_vimscript, false)
+]], false)
+
 vim.keymap.set("n", "<leader>sq", ":call Spawn_note_window()<CR>", { noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader>se", function()
@@ -122,15 +97,10 @@ vim.keymap.set("n", "<leader>se", function()
 	})
 end, { noremap = true, silent = true, desc = "Search Work Notes" })
 
+--
+-- Snacks search between buffers
 vim.keymap.set("n", "<leader><space>", function()
 	require("snacks.picker").buffers()
-	-- sort = function(buffers)
-	-- 	-- Sort by last used or most recently used
-	-- 	table.sort(buffers, function(a, b)
-	-- 		return a.lastused > b.lastused
-	-- 	end)
-	-- 	return buffers
-	-- end,
 end, { desc = "Search buffers" })
 
 -- Neogit and Diffview keymaps
@@ -143,13 +113,16 @@ vim.keymap.set("n", "<leader>gd", function()
 	end
 end, { desc = "Toggle diffView filehistory", noremap = true, silent = true })
 
--- Define the function in the global namespace
-_G.open_in_finder = function()
-	local file_path = vim.fn.expand("%:p:h") -- Get the directory of the current file
-	os.execute('open "' .. file_path .. '"')
-end
+--FileGitHistory
+vim.keymap.set("n", "<leader>gf", function()
+	Snacks.lazygit.log_file()
+end, { desc = "Snacks git history" })
 
--- Map the function to a keybinding
+--Open current file in Finder
+_G.open_in_finder = function()
+	local dir_path = vim.fn.expand("%:p:h")
+	os.execute('open "' .. dir_path .. '"')
+end
 vim.api.nvim_set_keymap(
 	"n",
 	"<leader>of",
@@ -157,10 +130,53 @@ vim.api.nvim_set_keymap(
 	{ noremap = true, silent = true, desc = "Open [F]ile in Finder" }
 )
 
-vim.keymap.set("n", "<leader>gf", function()
-	Snacks.lazygit.log_file()
-end, { desc = "Snacks git history" })
+--Snack search TODO
+-- vim.api.nvim_create_autocmd("VimEnter", {
+-- 	callback = function()
+-- 		vim.keymap.del("n", "<leader>st")
+-- 		vim.keymap.set(
+-- 			"n",
+-- 			"<leader>st",
+-- 			"<cmd>TodoQuickFix<cr>",
+-- 			{ desc = "Todo in current directory", remap = false }
+-- 		)
+-- 	end,
+-- })
+vim.keymap.set("n", "<leader>stt", "<cmd>TodoTrouble<cr>", { desc = "Todo in current directory", remap = false })
 
+--Terminal at the bottom
 vim.keymap.set({ "n", "t" }, "<leader>tt", function()
-	Snacks.terminal()
+	Snacks.terminal(nil, { cwd = vim.fn.getcwd(0) })
 end, { desc = "Toggle terminal" })
+
+--Github CopilotChat keymaps
+vim.keymap.set("n", "<leader>aa", "<cmd>CopilotChatToggle<cr>", { desc = "Toggle Copilot Chat" })
+vim.keymap.set("n", "<leader>as", "<cmd>CopilotChatSave<cr>", { desc = "Save Copilot Chat Session" })
+vim.keymap.set("n", "<leader>al", "<cmd>CopilotChatLoad<cr>", { desc = "Load Copilot Chat Session" })
+vim.keymap.set("n", "<leader>am", "<cmd>CopilotChatModels<CR>", { desc = "View/select available CopilotChat models" })
+vim.keymap.set("n", "<leader>aA", "<cmd>CopilotChatAgents<CR>", { desc = "View/select available CopilotChat agents" })
+
+vim.keymap.set("n", "<leader>s.", function()
+	Snacks.picker.resume()
+end, { desc = "Resume last picker" })
+
+vim.keymap.set("n", "<leader>fG", function()
+	require("snacks.picker").git_status({
+		finder = "git_status",
+		show_empty = true,
+		format = "git_status",
+		preview = "git_status",
+	})
+end, { desc = "Show changed (uncommitted) git files" })
+
+local function toggle_copilot()
+	local enabled = vim.g.copilot_enabled or false
+	if enabled then
+		vim.cmd("Copilot disable")
+	else
+		vim.cmd("Copilot enable")
+	end
+	vim.g.copilot_enabled = not enabled
+end
+
+vim.keymap.set("n", "<leader>ct", toggle_copilot, { noremap = true, silent = true })

@@ -30,7 +30,7 @@ vim.opt.showmode = false
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.opt.clipboard = "unnamedplus"
+-- vim.opt.clipboard = "unnamedplus"
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -79,3 +79,7 @@ vim.opt.foldmethod = "indent"
 -- vim.g.codeium_max_time = 100
 -- vim.g.codeium_max_completion = 3
 -- vim.g.codeium_autocomplete = true
+--
+vim.opt.isfname:append({ "[", "]" })
+
+vim.g.lazyvim_php_lsp = "intelephense"
