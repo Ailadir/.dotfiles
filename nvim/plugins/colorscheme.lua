@@ -45,17 +45,6 @@ return {
 			vim.cmd.colorscheme("catppuccin")
 		end,
 	},
-
-	-- Override bufferline to use correct catppuccin integration
-	{
-		"akinsho/bufferline.nvim",
-		optional = true,
-		opts = function(_, opts)
-			if (vim.g.colors_name or ""):find("catppuccin") then
-				opts.highlights = require("catppuccin.groups.integrations.bufferline").get()
-			end
-		end,
-	},
 }
 
 -- return {

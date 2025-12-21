@@ -1,7 +1,7 @@
 return {
 	"akinsho/bufferline.nvim",
 	event = "BufEnter",
-	dependencies = { "nvim-mini/mini.bufremove" },
+	dependencies = { "echasnovski/mini.bufremove" },
 	opts = {
 		options = {
 			close_command = function(n)
@@ -17,9 +17,9 @@ return {
 			end,
 		},
 	},
-	config = function()
-		require("bufferline").setup({})
+	config = function(_, opts)
+		require("bufferline").setup(opts)
 	end,
 }
 
--- highlights = require("catppuccin.groups.integrations.bufferline").get({ style = "default" }),
+--highlights = require("catppuccin.groups.integrations.bufferline").get({style='default'})
