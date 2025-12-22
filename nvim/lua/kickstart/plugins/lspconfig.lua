@@ -255,12 +255,15 @@ return {
 			--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 			local servers = {
 				vtsls = {},
+				prettier = {},
 				eslint = {
-					setting = {
+					settings = {
 						workingDirectories = { mode = "auto" },
 					},
 				},
 				html = {},
+				cssls = {},
+				stylelint_lsp = {},
 				-- clangd = {},
 				-- gopls = {},
 				-- pyright = {},
@@ -306,6 +309,7 @@ return {
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
 				"stylua", -- Used to format Lua code
+				"prettierd", -- Used to format JS/TS/CSS/HTML/JSON/etc
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
