@@ -1,12 +1,12 @@
 return {
 	{ -- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
-		branch = "master",
+		lazy = false, -- This plugin does not support lazy-loading
 		build = ":TSUpdate",
-		main = "nvim-treesitter.configs", -- Sets main module to use for opts
-		-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-		opts = {
-			ensure_installed = {
+		config = function()
+			-- Install parsers programmatically (main branch API)
+			local ts = require("nvim-treesitter")
+			local parsers = {
 				"bash",
 				"c",
 				"css",
@@ -25,18 +25,30 @@ return {
 				"typescript",
 				"vim",
 				"vimdoc",
-			},
-			-- Autoinstall languages that are not installed
-			auto_install = true,
-			highlight = {
-				enable = true,
-				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-				--  If you are experiencing weird indenting issues, add the language to
-				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
-				additional_vim_regex_highlighting = { "ruby" },
-			},
-			indent = { enable = true, disable = { "ruby" } },
-		},
+				"php", -- Added PHP support
+				"php_only", -- Added PHP-only support
+			}
+
+			-- Install each parser
+			for _, parser in ipairs(parsers) do
+				ts.install(parser)
+			end
+
+			-- Enable treesitter highlighting via autocommand
+			-- Only for real file types, not plugin buffers
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "*",
+				callback = function(event)
+					local bufnr = event.buf
+					-- Skip plugin/scratch buffers
+					if vim.bo[bufnr].buftype ~= "" then
+						return
+					end
+					-- Try to start treesitter, ignore errors for unsupported filetypes
+					pcall(vim.treesitter.start, bufnr)
+				end,
+			})
+		end,
 		-- There are additional nvim-treesitter modules that you can use to interact
 		-- with nvim-treesitter. You should go explore a few and see what interests you:
 		--
