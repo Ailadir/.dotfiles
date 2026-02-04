@@ -23,6 +23,7 @@ return {
 				"scss",
 				"tsx",
 				"typescript",
+				"vue",
 				"vim",
 				"vimdoc",
 				"php", -- Added PHP support
