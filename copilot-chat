@@ -1,0 +1,41 @@
+
+return {
+  { -- Add indentation guides even on blank lines
+    'lukas-reineke/indent-blankline.nvim',
+    -- Enable `lukas-reineke/indent-blankline.nvim`
+    -- See `:help ibl`
+    main = 'ibl',
+    opts = {},
+  },
+}
+
+
+return {
+	{
+		"akinsho/bufferline.nvim",
+		version = "*",
+		dependencies = {
+			"nvim-tree/nvim-web-devicons",
+		},
+		opts = {},
+	},
+}
+
+this both not working, why is that?
+
+but this works
+
+
+return {
+  'folke/trouble.nvim',
+  dependencies = { 'nvim-tree/nvim-web-devicons' },
+  opts = {},
+  cmd = 'Trouble',
+  keys = {
+    {
+      '<leader>fx',
+      '<cmd>Trouble<cr>',
+      desc = 'Toggle Trouble',
+    },
+  },
+}

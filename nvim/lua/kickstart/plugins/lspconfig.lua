@@ -244,15 +244,35 @@ return {
 			--  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+			-- Ensure LSP servers and tools are installed via Mason
+			require("mason-tool-installer").setup({
+				ensure_installed = {
+					"vtsls",
+					"vue-language-server",
+					"prettier",
+					"eslint",
+					"html-lsp",
+					"css-lsp",
+					"stylelint-lsp",
+					"lua-language-server",
+					"stylua",
+					"prettierd",
+				},
+			})
+
+			-- mason-lspconfig auto-enables installed LSP servers via vim.lsp.enable()
+			-- This must run BEFORE vim.lsp.config so defaults from lsp/ don't override our settings
+			require("mason-lspconfig").setup()
+
 			-- Configure servers via vim.lsp.config (Neovim 0.11+)
-			-- mason-lspconfig auto-enables installed servers; use vim.lsp.config to set options.
+			-- Must be AFTER mason-lspconfig.setup() so our settings override lsp/ defaults
 			for _, name in ipairs({ "vue_ls", "eslint", "cssls", "html", "stylelint_lsp", "lua_ls" }) do
 				vim.lsp.config(name, { capabilities = capabilities })
 			end
 
 			vim.lsp.config("vtsls", {
 				capabilities = capabilities,
-				filetypes = { "typescript", "javascript", "jsx", "tsx", "vue" },
+				filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact", "jsx", "tsx", "vue" },
 				settings = {
 					vtsls = {
 						enableMoveToFileCodeAction = true,
@@ -267,9 +287,11 @@ return {
 							globalPlugins = {
 								{
 									name = "@vue/typescript-plugin",
-									location = vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
+									location = vim.fn.stdpath("data")
+										.. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
 									languages = { "vue" },
 									configNamespace = "typescript",
+									enableForWorkspaceTypeScriptVersions = true,
 								},
 							},
 						},
@@ -294,25 +316,6 @@ return {
 					},
 				},
 			})
-
-			-- Ensure LSP servers and tools are installed via Mason
-			require("mason-tool-installer").setup({
-				ensure_installed = {
-					"vtsls",
-					"vue-language-server",
-					"prettier",
-					"eslint",
-					"html-language-server",
-					"css-language-server",
-					"stylelint-lsp",
-					"lua-language-server",
-					"stylua",
-					"prettierd",
-				},
-			})
-
-			-- mason-lspconfig auto-enables all installed LSP servers (no handlers needed on Neovim 0.11+)
-			require("mason-lspconfig").setup()
 		end,
 	},
 }
