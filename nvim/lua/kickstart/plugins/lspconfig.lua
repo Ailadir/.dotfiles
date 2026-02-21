@@ -186,28 +186,7 @@ return {
 				end,
 			})
 
-			-- Auto-format on save
-			vim.api.nvim_create_autocmd("BufWritePre", {
-				group = vim.api.nvim_create_augroup("kickstart-lsp-format", { clear = true }),
-				callback = function(event)
-					local clients = vim.lsp.get_clients({ bufnr = event.buf })
-					for _, client in ipairs(clients) do
-						if client.supports_method("textDocument/formatting") then
-							vim.lsp.buf.format({
-								bufnr = event.buf,
-								filter = function(c)
-									-- Prefer ESLint for JS/TS if available
-									if c.name == "eslint" then
-										return true
-									end
-									return c.name == client.name
-								end,
-							})
-							break
-						end
-					end
-				end,
-			})
+			-- Format-on-save is handled by conform.nvim
 
 			-- Diagnostic Config
 			-- See :help vim.diagnostic.Opts
@@ -257,22 +236,35 @@ return {
 					"lua-language-server",
 					"stylua",
 					"prettierd",
+					"gopls",
+					"gofumpt",
+					"biome",
 				},
 			})
 
 			-- mason-lspconfig auto-enables installed LSP servers via vim.lsp.enable()
 			-- This must run BEFORE vim.lsp.config so defaults from lsp/ don't override our settings
-			require("mason-lspconfig").setup()
+			require("mason-lspconfig").setup({
+				-- Only auto-enable servers we actually want; exclude leftover installs
+				automatic_enable = {
+					exclude = { "angularls" },
+				},
+			})
 
 			-- Configure servers via vim.lsp.config (Neovim 0.11+)
 			-- Must be AFTER mason-lspconfig.setup() so our settings override lsp/ defaults
-			for _, name in ipairs({ "vue_ls", "eslint", "cssls", "html", "stylelint_lsp", "lua_ls" }) do
+			for _, name in ipairs({ "vue_ls", "cssls", "html", "lua_ls" }) do
 				vim.lsp.config(name, { capabilities = capabilities })
 			end
 
+			vim.lsp.config("stylelint_lsp", {
+				capabilities = capabilities,
+				filetypes = { "css", "scss", "less", "html", "vue", "astro" },
+			})
+
 			vim.lsp.config("vtsls", {
 				capabilities = capabilities,
-				filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact", "jsx", "tsx", "vue" },
+				filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact", "vue" },
 				settings = {
 					vtsls = {
 						enableMoveToFileCodeAction = true,
@@ -301,6 +293,7 @@ return {
 
 			vim.lsp.config("eslint", {
 				capabilities = capabilities,
+				filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "astro", "htmlangular" },
 				settings = {
 					workingDirectories = { mode = "auto" },
 				},
@@ -313,6 +306,18 @@ return {
 						completion = {
 							callSnippet = "Replace",
 						},
+					},
+				},
+			})
+
+			vim.lsp.config("gopls", {
+				capabilities = capabilities,
+				filetypes = { "go", "gomod" },
+				settings = {
+					gopls = {
+						analyses = { unusedparams = true },
+						staticcheck = true,
+						gofumpt = true,
 					},
 				},
 			})

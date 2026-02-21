@@ -4,14 +4,15 @@ return {
 		lazy = false, -- This plugin does not support lazy-loading
 		build = ":TSUpdate",
 		config = function()
-			-- Install parsers programmatically (main branch API)
 			local ts = require("nvim-treesitter")
+			local ts_config = require("nvim-treesitter.config")
 			local parsers = {
 				"bash",
 				"c",
 				"css",
 				"diff",
 				"go",
+				"gomod",
 				"html",
 				"javascript",
 				"json",
@@ -20,42 +21,44 @@ return {
 				"markdown",
 				"markdown_inline",
 				"query",
+				"rust",
 				"scss",
 				"tsx",
 				"typescript",
 				"vue",
 				"vim",
 				"vimdoc",
-				"php", -- Added PHP support
-				"php_only", -- Added PHP-only support
+				"php",
+				"php_only",
 			}
 
-			-- Install each parser
-			for _, parser in ipairs(parsers) do
-				ts.install(parser)
+			-- Force-install parsers that are missing their highlight queries.
+			-- This handles the case where parser .so files exist from a previous install
+			-- but the queries directory was never populated (no queries = no colors).
+			local installed_queries = ts_config.get_installed("queries")
+			local missing = vim.tbl_filter(function(lang)
+				return not vim.list_contains(installed_queries, lang)
+			end, parsers)
+
+			if #missing > 0 then
+				ts.install(missing, { force = true })
 			end
 
-			-- Enable treesitter highlighting via autocommand
-			-- Only for real file types, not plugin buffers
+			-- Also run a normal install for any parsers not yet installed at all
+			ts.install(parsers)
+
+			-- Enable treesitter highlighting for all real file buffers
 			vim.api.nvim_create_autocmd("FileType", {
 				pattern = "*",
 				callback = function(event)
 					local bufnr = event.buf
-					-- Skip plugin/scratch buffers
 					if vim.bo[bufnr].buftype ~= "" then
 						return
 					end
-					-- Try to start treesitter, ignore errors for unsupported filetypes
 					pcall(vim.treesitter.start, bufnr)
 				end,
 			})
 		end,
-		-- There are additional nvim-treesitter modules that you can use to interact
-		-- with nvim-treesitter. You should go explore a few and see what interests you:
-		--
-		--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 	},
 }
 -- vim: ts=2 sts=2 sw=2 et
