@@ -239,6 +239,8 @@ return {
 					"gopls",
 					"gofumpt",
 					"biome",
+					"protols",
+					"buf",
 				},
 			})
 
@@ -253,7 +255,7 @@ return {
 
 			-- Configure servers via vim.lsp.config (Neovim 0.11+)
 			-- Must be AFTER mason-lspconfig.setup() so our settings override lsp/ defaults
-			for _, name in ipairs({ "vue_ls", "cssls", "html", "lua_ls" }) do
+			for _, name in ipairs({ "vue_ls", "cssls", "html", "lua_ls", "protols" }) do
 				vim.lsp.config(name, { capabilities = capabilities })
 			end
 
@@ -293,7 +295,16 @@ return {
 
 			vim.lsp.config("eslint", {
 				capabilities = capabilities,
-				filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "astro", "htmlangular" },
+				filetypes = {
+					"javascript",
+					"javascriptreact",
+					"typescript",
+					"typescriptreact",
+					"vue",
+					"svelte",
+					"astro",
+					"htmlangular",
+				},
 				settings = {
 					workingDirectories = { mode = "auto" },
 				},
@@ -320,6 +331,11 @@ return {
 						gofumpt = true,
 					},
 				},
+			})
+
+			vim.lsp.config("protols", {
+				capabilities = capabilities,
+				filetypes = { "proto" },
 			})
 		end,
 	},
