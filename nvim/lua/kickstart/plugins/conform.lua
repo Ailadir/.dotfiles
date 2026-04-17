@@ -24,12 +24,13 @@ return {
 					return nil
 				else
 					return {
-						timeout_ms = 500,
+						timeout_ms = 2000,
 						lsp_format = "fallback",
 					}
 				end
 			end,
 			formatters_by_ft = {
+				python = { "black" },
 				lua = { "stylua" },
 				go = { "gofumpt" },
 				rust = { "rustfmt" },

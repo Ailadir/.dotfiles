@@ -239,8 +239,10 @@ return {
 					"gopls",
 					"gofumpt",
 					"biome",
+					"black",
 					"protols",
 					"buf",
+					"gopls",
 				},
 			})
 
@@ -253,9 +255,17 @@ return {
 				},
 			})
 
+			require("go").setup({
+				lsp_cfg = true,
+				ai = {
+					enable = true,
+					provider = "copilot", -- or 'openai'
+				},
+			})
+
 			-- Configure servers via vim.lsp.config (Neovim 0.11+)
 			-- Must be AFTER mason-lspconfig.setup() so our settings override lsp/ defaults
-			for _, name in ipairs({ "vue_ls", "cssls", "html", "lua_ls", "protols" }) do
+			for _, name in ipairs({ "vue_ls", "cssls", "html", "lua_ls", "protols", "gopls" }) do
 				vim.lsp.config(name, { capabilities = capabilities })
 			end
 
@@ -333,9 +343,29 @@ return {
 				},
 			})
 
+			vim.lsp.config("pyright", {
+				capabilities = capabilities,
+				filetypes = { "python" },
+				settings = {
+					python = {
+						analysis = {
+							autoSearchPaths = true,
+							useLibraryCodeForTypes = true,
+							diagnosticMode = "workspace",
+							typeCheckingMode = "basic",
+						},
+					},
+				},
+			})
+
 			vim.lsp.config("protols", {
 				capabilities = capabilities,
 				filetypes = { "proto" },
+			})
+
+			vim.lsp.config("ansiblels", {
+				capabilities = capabilities,
+				filetypes = { "yaml.ansible" },
 			})
 		end,
 	},
