@@ -6,6 +6,7 @@ return {
 		picker = {
 			enabled = true,
 		},
+		indent = {},
 	},
 	keys = {
 		-- Top Pickers & Explorer

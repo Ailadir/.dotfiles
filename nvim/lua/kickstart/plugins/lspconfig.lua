@@ -241,7 +241,6 @@ return {
 					"biome",
 					"black",
 					"protols",
-					"buf",
 					"gopls",
 				},
 			})
@@ -375,6 +374,16 @@ return {
 			vim.lsp.config("ansiblels", {
 				capabilities = capabilities,
 				filetypes = { "yaml.ansible" },
+			})
+
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "go",
+				group = vim.api.nvim_create_augroup("proto-go-jump", { clear = true }),
+				callback = function(event)
+					vim.keymap.set("n", "gd", function()
+						require("custom.proto_jump").goto_definition()
+					end, { buffer = event.buf, desc = "Goto Definition (proto-aware)" })
+				end,
 			})
 		end,
 	},
