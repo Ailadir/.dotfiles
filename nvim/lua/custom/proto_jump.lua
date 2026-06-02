@@ -67,12 +67,16 @@ function M.goto_definition()
 
 			if fname and is_proto_generated(fname) then
 				local source = get_proto_source(fname)
-				if source then
+				if not source then
+					vim.notify("proto-jump: no '// source:' comment found in " .. vim.fn.fnamemodify(fname, ":t"), vim.log.levels.WARN)
+				else
 					local proto_path = find_proto_file(source)
-					if proto_path then
-						local lnum = find_symbol_line(proto_path, symbol) or 1
+					if not proto_path then
+						vim.notify("proto-jump: proto file not found: " .. source, vim.log.levels.WARN)
+					else
+						local lnum = find_symbol_line(proto_path, symbol)
 						vim.cmd("edit " .. vim.fn.fnameescape(proto_path))
-						vim.api.nvim_win_set_cursor(0, { lnum, 0 })
+						vim.api.nvim_win_set_cursor(0, { lnum or 1, 0 })
 						vim.cmd("normal! zz")
 						return
 					end
@@ -87,6 +91,16 @@ function M.goto_definition()
 				vim.fn.setqflist({}, " ", opts)
 				vim.cmd("cfirst")
 			end
+		end,
+	})
+end
+
+function M.setup()
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = "go",
+		group = vim.api.nvim_create_augroup("proto-go-jump", { clear = true }),
+		callback = function(event)
+			vim.keymap.set("n", "gd", M.goto_definition, { buffer = event.buf, desc = "Goto Definition (proto-aware)" })
 		end,
 	})
 end
