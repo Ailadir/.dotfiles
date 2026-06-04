@@ -24,12 +24,19 @@ local function get_proto_source(path)
 end
 
 local function find_proto_file(source_path)
+	local filename = source_path:match("([^/]+)$")
 	local roots = vim.lsp.buf.list_workspace_folders()
 	table.insert(roots, vim.fn.getcwd())
 	for _, root in ipairs(roots) do
+		-- exact path first
 		local full = root .. "/" .. source_path
 		if vim.fn.filereadable(full) == 1 then
 			return full
+		end
+		-- recursive search by filename
+		local found = vim.fn.globpath(root, "**/" .. filename, 0, 1)
+		if found and #found > 0 then
+			return found[1]
 		end
 	end
 	return nil
