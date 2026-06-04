@@ -356,7 +356,11 @@ return {
 		{
 			"gd",
 			function()
-				Snacks.picker.lsp_definitions()
+				if vim.bo.filetype == "go" then
+					require("custom.proto_jump").goto_definition()
+				else
+					Snacks.picker.lsp_definitions()
+				end
 			end,
 			desc = "Goto Definition",
 		},

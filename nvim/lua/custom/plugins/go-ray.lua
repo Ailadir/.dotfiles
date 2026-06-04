@@ -16,7 +16,7 @@ return {
 			group = format_sync_grp,
 		})
 		return {
-			-- lsp_keymaps = false,
+			lsp_keymaps = false,
 			-- other options
 		}
 	end,

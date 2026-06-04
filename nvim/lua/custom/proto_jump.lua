@@ -10,54 +10,132 @@ local function is_proto_generated(path)
 end
 
 local function get_proto_source(path)
-	local f = io.open(path, "r")
-	if not f then return nil end
-	local source
-	for _ = 1, 15 do
-		local line = f:read("*l")
-		if not line then break end
-		source = line:match("^// source: (.+)$")
-		if source then break end
+	local lines = vim.fn.readfile(path, "", 15)
+	for _, line in ipairs(lines) do
+		line = line:gsub("\r", "")
+		local source = line:match("^// source: (.+)")
+		if source then
+			return source:gsub("[\r\n%s]+$", "")
+		end
 	end
-	f:close()
-	return source
+	return nil
 end
 
 local function find_proto_file(source_path)
+	source_path = source_path:gsub("[\r\n]", "")
 	local filename = source_path:match("([^/]+)$")
+
+	-- Build candidates: exact name first, then basename + .proto as fallback
+	-- (handles truncated source comments like "delivery_methods.pr" instead of "delivery_methods.proto")
+	local basename = filename:gsub("%.[^.]*$", "")
+	local candidates = { filename }
+	local proto_fallback = basename .. ".proto"
+	if proto_fallback ~= filename then
+		table.insert(candidates, proto_fallback)
+	end
+
 	local roots = vim.lsp.buf.list_workspace_folders()
 	table.insert(roots, vim.fn.getcwd())
-	for _, root in ipairs(roots) do
-		-- exact path first
-		local full = root .. "/" .. source_path
-		if vim.fn.filereadable(full) == 1 then
-			return full
-		end
-		-- recursive search by filename
-		local found = vim.fn.globpath(root, "**/" .. filename, 0, 1)
-		if found and #found > 0 then
-			return found[1]
+
+	for _, candidate in ipairs(candidates) do
+		for _, root in ipairs(roots) do
+			local result = vim.fn.findfile(candidate, root .. "/**")
+			if result ~= "" then
+				return vim.fn.fnamemodify(result, ":p")
+			end
 		end
 	end
 	return nil
 end
 
 local function find_symbol_line(proto_path, symbol)
-	local escaped = vim.pesc(symbol)
-	local patterns = {
-		"^%s*message%s+" .. escaped .. "%s*[{%s]",
-		"^%s*enum%s+" .. escaped .. "%s*[{%s]",
-		"^%s*rpc%s+" .. escaped .. "%s*[(%s]",
-		"^%s*service%s+" .. escaped .. "%s*[{%s]",
-	}
-	local lnum = 0
-	for line in io.lines(proto_path) do
-		lnum = lnum + 1
-		for _, p in ipairs(patterns) do
-			if line:match(p) then
-				return lnum
+	local lines = vim.fn.readfile(proto_path)
+	if not lines or #lines == 0 then return nil end
+
+	local function search_from(from, pat)
+		for i = from, #lines do
+			if lines[i]:match(pat) then
+				return i
 			end
 		end
+		return nil
+	end
+
+	local escaped = vim.pesc(symbol)
+
+	-- Match name followed by space/{/( or end-of-line
+	local function make_patterns(keyword, name)
+		return {
+			"^%s*" .. keyword .. "%s+" .. name .. "[%s{(]",
+			"^%s*" .. keyword .. "%s+" .. name .. "$",
+		}
+	end
+
+	-- Direct match: message, enum, rpc, service
+	for _, pair in ipairs({
+		{ "message", escaped }, { "enum", escaped },
+		{ "rpc", escaped },     { "service", escaped },
+	}) do
+		for _, p in ipairs(make_patterns(pair[1], pair[2])) do
+			local lnum = search_from(1, p)
+			if lnum then return lnum end
+		end
+	end
+
+	-- Nested Go naming: TypeA_TypeB_TypeC → find "message TypeA", then "message TypeC" inside it
+	local parts = {}
+	for part in symbol:gmatch("[^_]+") do
+		table.insert(parts, part)
+	end
+	if #parts >= 2 then
+		for _, p in ipairs(make_patterns("message", vim.pesc(parts[1]))) do
+			local top = search_from(1, p)
+			if top then
+				for _, np in ipairs(make_patterns("message", vim.pesc(parts[#parts]))) do
+					local lnum = search_from(top + 1, np)
+					if lnum then return lnum end
+				end
+				break
+			end
+		end
+	end
+
+	return nil
+end
+
+-- CamelCase → snake_case: "AgentFullname" → "agent_fullname"
+local function camel_to_snake(s)
+	s = s:gsub("(%u+)(%u%l)", "%1_%2")
+	s = s:gsub("(%l%d*)(%u)", "%1_%2")
+	return s:lower()
+end
+
+-- Search for a proto field name within a message block starting at from_line.
+-- Stops when it hits another top-level declaration.
+local function find_field_line(lines, from_line, field_name)
+	local escaped = vim.pesc(field_name)
+	for i = from_line + 1, #lines do
+		local l = lines[i]
+		-- Stop at top-level declarations (we've left the message block)
+		if l:match("^message%s") or l:match("^service%s") or l:match("^enum%s") then
+			break
+		end
+		-- Match "  <type> field_name = N;" pattern
+		if l:match("%s" .. escaped .. "%s*=") then
+			return i
+		end
+	end
+	return nil
+end
+
+-- Extract the receiver type from a pb.go function definition line.
+-- e.g. "func (x *GetCardsBundlesList_Response_Items) GetStatus()" → "GetCardsBundlesList_Response_Items"
+local function get_pb_receiver_type(fname, lnum)
+	local lines = vim.fn.readfile(fname, "", lnum + 1)
+	if not lines then return nil end
+	for i = math.min(lnum, #lines), math.max(1, lnum - 3), -1 do
+		local receiver = (lines[i] or ""):match("^func %([^*]*%*([%w_]+)%)")
+		if receiver then return receiver end
 	end
 	return nil
 end
@@ -75,13 +153,32 @@ function M.goto_definition()
 			if fname and is_proto_generated(fname) then
 				local source = get_proto_source(fname)
 				if not source then
-					vim.notify("proto-jump: no '// source:' comment found in " .. vim.fn.fnamemodify(fname, ":t"), vim.log.levels.WARN)
+					vim.notify(
+						"proto-jump: no '// source:' comment in " .. vim.fn.fnamemodify(fname, ":t"),
+						vim.log.levels.WARN
+					)
 				else
 					local proto_path = find_proto_file(source)
 					if not proto_path then
 						vim.notify("proto-jump: proto file not found: " .. source, vim.log.levels.WARN)
 					else
 						local lnum = find_symbol_line(proto_path, symbol)
+
+						-- Getter methods (GetX) that aren't RPCs: navigate to the specific
+						-- field inside the receiver's message, falling back to the message line
+						if not lnum and symbol:match("^Get[A-Z]") then
+							local receiver = get_pb_receiver_type(fname, item.lnum or 1)
+							if receiver then
+								local message_lnum = find_symbol_line(proto_path, receiver)
+								if message_lnum then
+									local proto_lines = vim.fn.readfile(proto_path)
+									local field_name = camel_to_snake(symbol:gsub("^Get", ""))
+									lnum = find_field_line(proto_lines, message_lnum, field_name)
+										or message_lnum
+								end
+							end
+						end
+
 						vim.cmd("edit " .. vim.fn.fnameescape(proto_path))
 						vim.api.nvim_win_set_cursor(0, { lnum or 1, 0 })
 						vim.cmd("normal! zz")
@@ -90,7 +187,7 @@ function M.goto_definition()
 				end
 			end
 
-			-- fallback: standard jump
+			-- fallback: standard LSP jump
 			if #opts.items == 1 then
 				vim.cmd("edit " .. vim.fn.fnameescape(fname))
 				vim.api.nvim_win_set_cursor(0, { item.lnum or 1, math.max(0, (item.col or 1) - 1) })
@@ -103,11 +200,12 @@ function M.goto_definition()
 end
 
 function M.setup()
-	vim.api.nvim_create_autocmd("FileType", {
-		pattern = "go",
+	vim.api.nvim_create_autocmd("LspAttach", {
 		group = vim.api.nvim_create_augroup("proto-go-jump", { clear = true }),
 		callback = function(event)
-			vim.keymap.set("n", "gd", M.goto_definition, { buffer = event.buf, desc = "Goto Definition (proto-aware)" })
+			if vim.bo[event.buf].filetype == "go" then
+				vim.keymap.set("n", "gd", M.goto_definition, { buffer = event.buf, desc = "Goto Definition (proto-aware)" })
+			end
 		end,
 	})
 end

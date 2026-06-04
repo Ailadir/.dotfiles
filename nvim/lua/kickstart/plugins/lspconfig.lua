@@ -256,6 +256,7 @@ return {
 
 			require("go").setup({
 				lsp_cfg = true,
+				lsp_keymaps = false,
 				ai = {
 					enable = true,
 					provider = "copilot", -- or 'openai'
