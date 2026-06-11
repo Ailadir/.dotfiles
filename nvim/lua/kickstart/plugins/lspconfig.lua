@@ -263,7 +263,7 @@ return {
 				},
 			})
 
-			-- Configure servers via vim.lsp.config (Neovim 0.11+)
+-- Configure servers via vim.lsp.config (Neovim 0.11+)
 			-- Must be AFTER mason-lspconfig.setup() so our settings override lsp/ defaults
 			for _, name in ipairs({ "vue_ls", "cssls", "html", "lua_ls", "gopls" }) do
 				vim.lsp.config(name, { capabilities = capabilities })
@@ -361,15 +361,13 @@ return {
 			vim.lsp.config("protols", {
 				capabilities = capabilities,
 				filetypes = { "proto" },
-				before_init = function(_, config)
-					config.init_options = {
-						include_paths = {
-							".",
-							"proto",
-							"proto/api_v1",
-						},
-					}
-				end,
+				init_options = {
+					include_paths = {
+						".",
+						"proto",
+						"proto/api_v1",
+					},
+				},
 			})
 
 			vim.lsp.config("ansiblels", {
