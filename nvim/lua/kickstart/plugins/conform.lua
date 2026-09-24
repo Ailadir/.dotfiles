@@ -30,9 +30,11 @@ return {
 				end
 			end,
 			formatters_by_ft = {
+				proto = { "buf" },
 				python = { "black" },
 				lua = { "stylua" },
-				go = { "gofumpt" },
+				-- go = { "goimports", "gofumpt" },
+				go = { "goimports" },
 				rust = { "rustfmt" },
 				vue = { "biome", "prettierd" },
 				javascript = { "biome", "prettierd" },

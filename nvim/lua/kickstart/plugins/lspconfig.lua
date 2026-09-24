@@ -240,7 +240,7 @@ return {
 					"gofumpt",
 					"biome",
 					"black",
-					"protols",
+					-- "protols",
 					"gopls",
 				},
 			})
@@ -250,7 +250,7 @@ return {
 			require("mason-lspconfig").setup({
 				-- Only auto-enable servers we actually want; exclude leftover installs
 				automatic_enable = {
-					exclude = { "angularls" },
+					exclude = {},
 				},
 			})
 
@@ -263,7 +263,7 @@ return {
 				},
 			})
 
--- Configure servers via vim.lsp.config (Neovim 0.11+)
+			-- Configure servers via vim.lsp.config (Neovim 0.11+)
 			-- Must be AFTER mason-lspconfig.setup() so our settings override lsp/ defaults
 			for _, name in ipairs({ "vue_ls", "cssls", "html", "lua_ls", "gopls" }) do
 				vim.lsp.config(name, { capabilities = capabilities })
@@ -358,17 +358,26 @@ return {
 				},
 			})
 
-			vim.lsp.config("protols", {
-				capabilities = capabilities,
-				filetypes = { "proto" },
-				init_options = {
-					include_paths = {
-						".",
-						"proto",
-						"proto/api_v1",
-					},
-				},
-			})
+			-- vim.lsp.config("protols", {
+			-- 	capabilities = capabilities,
+			-- 	filetypes = { "proto" },
+			-- 	handlers = {
+			-- 		["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+			-- 			if result and result.uri and not vim.uri_to_fname(result.uri):match("%.proto$") then
+			-- 				return
+			-- 			end
+			-- 			vim.lsp.handlers["textDocument/publishDiagnostics"](err, result, ctx, config)
+			-- 		end,
+			-- 	},
+			-- 	init_options = {
+			-- 		include_paths = {
+			-- 			".",
+			-- 			"proto",
+			-- 			"proto/api_v1",
+			-- 		},
+			-- 	},
+			-- })
+			-- vim.lsp.enable("protols")
 
 			vim.lsp.config("ansiblels", {
 				capabilities = capabilities,

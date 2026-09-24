@@ -133,3 +133,38 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		vim.keymap.set("n", "<C-t>", "<C-o>", opts)
 	end,
 })
+
+vim.keymap.set("n", "<leader>ft", function()
+	Snacks.picker.todo_comments() ---@diagnostic disable-line: undefined-field
+end, { desc = "TODO" })
+
+-- Force snippet jump forward even if autocompletion is active
+vim.keymap.set({ "i", "s" }, "<C-l>", function()
+	-- 1. Try Neovim native snippet fallback
+	if vim.snippet and vim.snippet.active({ direction = 1 }) then
+		return vim.snippet.jump(1)
+	end
+
+	-- 2. Try LuaSnip fallback if active
+	local luasnip_ok, luasnip = pcall(require, "luasnip")
+	if luasnip_ok and luasnip.jumpable(1) then
+		return luasnip.jump(1)
+	end
+
+	-- 3. Fallback to normal behavior if no snippet is running
+	return "<C-l>"
+end, { expr = true, silent = true, desc = "Snippet jump forward" })
+
+-- Force snippet jump backward
+vim.keymap.set({ "i", "s" }, "<C-h>", function()
+	if vim.snippet and vim.snippet.active({ direction = -1 }) then
+		return vim.snippet.jump(-1)
+	end
+
+	local luasnip_ok, luasnip = pcall(require, "luasnip")
+	if luasnip_ok and luasnip.jumpable(-1) then
+		return luasnip.jump(-1)
+	end
+
+	return "<C-h>"
+end, { expr = true, silent = true, desc = "Snippet jump backward" })
