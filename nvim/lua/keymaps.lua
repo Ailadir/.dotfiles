@@ -103,11 +103,11 @@ vim.keymap.set("n", "<leader>gn", function()
 end, { desc = "Toggle neogit", noremap = true, silent = true })
 vim.keymap.set("n", "<leader>gd", function()
 	if next(require("diffview.lib").views) == nil then
-		vim.cmd("DiffviewFileHistory %")
+		vim.cmd("DiffviewOpen develop...HEAD")
 	else
 		vim.cmd("DiffviewClose")
 	end
-end, { desc = "Toggle diffView filehistory", noremap = true, silent = true })
+end, { desc = "Toggle diffview against develop", noremap = true, silent = true })
 
 --FileGitHistory
 vim.keymap.set("n", "<leader>gf", function()
