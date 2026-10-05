@@ -1,0 +1,13 @@
+onboarding = false
+[theme]
+name = "catppuccin"
+auto_switch = false
+
+[ui]
+show_agent_labels_on_pane_borders = false
+
+[ui.sound]
+enabled = false
+
+[keys]
+switch_tab = ["prefix+1..9", "ctrl+1..9"]

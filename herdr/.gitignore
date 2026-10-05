@@ -1,0 +1,6 @@
+*.log
+*.sock
+*.bak
+*.lock
+session.json
+release-notes.json
