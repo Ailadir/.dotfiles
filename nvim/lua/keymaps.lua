@@ -93,7 +93,14 @@ vim.keymap.set("n", "<leader><space>", function()
 end, { desc = "Search buffers" })
 
 -- Neogit and Diffview keymaps
-vim.api.nvim_set_keymap("n", "<leader>gn", "<CMD>Neogit<CR>", { desc = "Open neogit", noremap = true, silent = true })
+vim.keymap.set("n", "<leader>gn", function()
+	local status = require("neogit.buffers.status")
+	if status.is_open() then
+		status.instance():close()
+	else
+		vim.cmd("Neogit")
+	end
+end, { desc = "Toggle neogit", noremap = true, silent = true })
 vim.keymap.set("n", "<leader>gd", function()
 	if next(require("diffview.lib").views) == nil then
 		vim.cmd("DiffviewFileHistory %")
