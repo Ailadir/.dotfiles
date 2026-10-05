@@ -181,6 +181,15 @@ return {
 			"csv",
 		},
 	},
+	dependencies = {
+		{
+			"nvim-treesitter/nvim-treesitter-context",
+			opts = {
+				max_lines = 3, -- Limits the sticky header to 3 lines max
+				mode = "cursor", -- Calculates context based on cursor position
+			},
+		},
+	},
 	config = function(_, opts)
 		require("nvim-treesitter").setup(opts)
 
